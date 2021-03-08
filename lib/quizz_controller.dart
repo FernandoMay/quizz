@@ -15,10 +15,10 @@ class QuizState extends Equatable {
       status == QuizStatus.incorrect || status == QuizStatus.correct;
 
   const QuizState({
-    @required this.correct,
-    @required this.incorrect,
-    @required this.selectedAnswer,
-    @required this.status,
+    required this.correct,
+    required this.incorrect,
+    required this.selectedAnswer,
+    required this.status,
   });
 
   factory QuizState.initial() {
@@ -39,10 +39,10 @@ class QuizState extends Equatable {
       ];
 
   QuizState copyWith({
-    String selectedAnswer,
-    List<Question> correct,
-    List<Question> incorrect,
-    QuizStatus status,
+    String? selectedAnswer,
+    List<Question>? correct,
+    List<Question>? incorrect,
+    QuizStatus? status,
   }) {
     return QuizState(
       selectedAnswer: selectedAnswer ?? this.selectedAnswer,
@@ -53,7 +53,7 @@ class QuizState extends Equatable {
   }
 }
 
-final quizControllerProvider =
+final AutoDisposeStateNotifierProvider<QuizController>? quizControllerProvider =
     StateNotifierProvider.autoDispose<QuizController>(
   (ref) => QuizController(),
 );

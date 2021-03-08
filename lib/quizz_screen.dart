@@ -10,7 +10,8 @@ import 'package:quizz/enums.dart';
 import 'package:quizz/quizz_controller.dart';
 import 'package:quizz/quizz_repository.dart';
 
-final quizQuestionsProvider = FutureProvider.autoDispose<List<Question>>(
+final AutoDisposeFutureProvider<List<Question>>? quizQuestionsProvider =
+    FutureProvider.autoDispose<List<Question>>(
   (ref) => ref.watch(quizRepositoryProvider).getQuestions(
         numQuestions: 5,
         categoryId: Random().nextInt(24) + 9,
@@ -21,7 +22,7 @@ final quizQuestionsProvider = FutureProvider.autoDispose<List<Question>>(
 class QuizScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final quizQuestions = useProvider(quizQuestionsProvider);
+    final quizQuestions = useProvider(quizQuestionsProvider!);
     final pageController = usePageController();
     return Container(
       height: MediaQuery.of(context).size.height,
@@ -45,17 +46,17 @@ class QuizScreen extends HookWidget {
         ),
         bottomSheet: quizQuestions.maybeWhen(
             data: (questions) {
-              final quizState = useProvider(quizControllerProvider.state);
+              final quizState = useProvider(quizControllerProvider!.state);
               if (!quizState.answered) return const SizedBox.shrink();
               return CustomButton(
-                title: pageController.page.toInt() + 1 < questions.length
+                title: pageController.page!.toInt() + 1 < questions.length
                     ? 'Next Question'
                     : 'See Results',
                 onTap: () {
                   context
-                      .read(quizControllerProvider)
-                      .nextQuestion(questions, pageController.page.toInt());
-                  if (pageController.page.toInt() + 1 < questions.length) {
+                      .read(quizControllerProvider!)
+                      .nextQuestion(questions, pageController.page!.toInt());
+                  if (pageController.page!.toInt() + 1 < questions.length) {
                     pageController.nextPage(
                       duration: const Duration(milliseconds: 250),
                       curve: Curves.linear,
@@ -76,7 +77,7 @@ Widget _buildBody(
   List<Question> questions,
 ) {
   if (questions.isEmpty) return QuizError(message: 'No questions found.');
-  final quizState = useProvider(quizControllerProvider.state);
+  final quizState = useProvider(quizControllerProvider!.state);
   return quizState.status == QuizStatus.complete
       ? QuizResults(state: quizState, questions: questions)
       : QuizQuestions(
@@ -90,7 +91,7 @@ class QuizResults extends StatelessWidget {
   final QuizState state;
   final List<Question> questions;
 
-  const QuizResults({Key key, @required this.questions, @required this.state})
+  const QuizResults({Key? key, required this.questions, required this.state})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -123,7 +124,7 @@ class QuizResults extends StatelessWidget {
             title: 'New Quiz',
             onTap: () {
               context.refresh(quizRepositoryProvider);
-              context.read(quizControllerProvider).reset();
+              context.read(quizControllerProvider!).reset();
             }),
       ],
     );
@@ -136,10 +137,10 @@ class QuizQuestions extends StatelessWidget {
   final List<Question> questions;
 
   const QuizQuestions({
-    Key key,
-    @required this.pageController,
-    @required this.questions,
-    @required this.state,
+    Key? key,
+    required this.pageController,
+    required this.questions,
+    required this.state,
   }) : super(
           key: key,
         );
@@ -189,7 +190,7 @@ class QuizQuestions extends StatelessWidget {
                         isCorrect: e == question.correctAnswer,
                         isDisplayingAnswer: state.answered,
                         onTap: () => context
-                            .read(quizControllerProvider)
+                            .read(quizControllerProvider!)
                             .submitAnswer(question, e),
                       ),
                     )
@@ -209,12 +210,12 @@ class AnswerCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const AnswerCard({
-    Key key,
-    @required this.answer,
-    @required this.isCorrect,
-    @required this.isDisplayingAnswer,
-    @required this.isSelected,
-    @required this.onTap,
+    Key? key,
+    required this.answer,
+    required this.isCorrect,
+    required this.isDisplayingAnswer,
+    required this.isSelected,
+    required this.onTap,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -272,9 +273,9 @@ class CircularIcon extends StatelessWidget {
   final Color color;
 
   const CircularIcon({
-    Key key,
-    @required this.icon,
-    @required this.color,
+    Key? key,
+    required this.icon,
+    required this.color,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -296,11 +297,11 @@ class CircularIcon extends StatelessWidget {
 }
 
 class QuizError extends StatelessWidget {
-  final String message;
+  final String? message;
 
   const QuizError({
-    Key key,
-    @required this.message,
+    Key? key,
+    required this.message,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -308,7 +309,7 @@ class QuizError extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            message,
+            message!,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 20.0,
@@ -340,9 +341,9 @@ class CustomButton extends StatelessWidget {
   final VoidCallback onTap;
 
   const CustomButton({
-    Key key,
-    @required this.title,
-    @required this.onTap,
+    Key? key,
+    required this.title,
+    required this.onTap,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {

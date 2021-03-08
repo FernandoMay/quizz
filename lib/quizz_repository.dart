@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quizz/Failure.dart';
 import 'package:quizz/Question.dart';
@@ -20,9 +19,9 @@ class QuizRepository extends BaseQuizRepository {
 
   @override
   Future<List<Question>> getQuestions({
-    @required int numQuestions,
-    @required int categoryId,
-    @required Difficulty difficulty,
+    required int? numQuestions,
+    required int? categoryId,
+    required Difficulty? difficulty,
   }) async {
     try {
       final queryParameters = {
@@ -49,5 +48,7 @@ class QuizRepository extends BaseQuizRepository {
       print(err);
       throw const Failure(message: 'Please check your connection. ');
     } catch (err) {}
+
+    return [];
   }
 }

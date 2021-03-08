@@ -3,8 +3,8 @@ import 'package:quizz/enums.dart';
 
 abstract class BaseQuizRepository {
   Future<List<Question>> getQuestions({
-    int numQuestions,
-    int categoryId,
-    Difficulty difficulty,
+    required int? numQuestions,
+    required int? categoryId,
+    required Difficulty? difficulty,
   });
 }
